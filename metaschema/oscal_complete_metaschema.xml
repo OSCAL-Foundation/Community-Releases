@@ -20,5 +20,6 @@
       <import href="oscal_ssp_metaschema.xml"/>
       <import href="oscal_assessment-plan_metaschema.xml"/>
       <import href="oscal_assessment-results_metaschema.xml"/>
+      <import href="oscal_mapping_metaschema.xml"/>
       <import href="oscal_poam_metaschema.xml"/>
 </METASCHEMA>

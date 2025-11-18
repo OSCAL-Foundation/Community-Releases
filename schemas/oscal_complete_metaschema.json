@@ -4216,6 +4216,506 @@
       "required" : [ "uuid" ],
       "additionalProperties" : false
     },
+    "AssemblyOscalMappingCommonGapSummaryType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingCommonGapSummaryType",
+      "title" : "Gap Summary",
+      "description" : "A *by-id* collection of all controls that were not mapped at all in this ` mapping-collection`. If a control is partially mapped, the parts of the control are unmappable, the gap and discrepancies should be documented in the ` relationship-gal`.",
+      "type" : "object",
+      "properties" : {
+        "uuid" : {
+          "title" : "Gap Summary Universally Unique Identifier",
+          "description" : "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this mapping gap summary elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `SSP` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonGapSummaryUuidType"
+        },
+        "unmapped-controls" : {
+          "title" : "Select Control",
+          "description" : "Select a control or controls from an imported control set.\n\nIf `with-child-controls` is \"yes\" on the call to a control, any controls appearing within it (child controls) will be selected, with no additional `call` directives required. This flag provides a way to include controls with all their dependent controls (enhancements) without having to call them individually.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMappingCommonSelectControlByIdType"
+          },
+          "minItems" : 1
+        }
+      },
+      "required" : [ "uuid", "unmapped-controls" ],
+      "additionalProperties" : false
+    },
+    "AssemblyOscalMappingCommonMapType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingCommonMapType",
+      "title" : "Mapping Entry",
+      "description" : "A relationship-based mapping between a source and target set consisting of members (i.e., controls, control statements) from the respective source and target.",
+      "type" : "object",
+      "properties" : {
+        "uuid" : {
+          "title" : "Mapping Entry Identifier",
+          "description" : "The unique identifier for the mapping entry.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMapUuidType"
+        },
+        "ns" : {
+          "title" : "Relationship Value Namespace",
+          "description" : "A namespace qualifying the relationship's value. This allows different organizations to associate distinct semantics for relationships with the same name.\n\nThis value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier).\n\nWhen a `ns` is not provided, its value should be assumed to be ` http://csrc.nist.gov/ns/oscal` and the name should be a name defined by the associated OSCAL model.",
+          "default" : "http://csrc.nist.gov/ns/oscal",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMapNsType"
+        },
+        "matching-rationale" : {
+          "title" : "Matching",
+          "description" : "The method used for relating controls within the mapping. The supported methods are aligned with the [NIST Interagency Report (IR) 8477](https://doi.org/10.6028/NIST.IR.8477), Section 4.3 Set Theory Relationship Mapping.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMatchingRationaleType"
+        },
+        "relationship" : {
+          "title" : "Mapping Entry Relationship",
+          "description" : "The relationship type for the mapping entry, which describes the relationship between the effective requirements of the specified source and target sets in the context of the `matching-rationale` method globaly defined in the `provenance` unless overwritten locally in the ` map`. The `relationship` type and the `matching-rationale` must be used together. However, more than one `matching-rationale` method may apply to a `source` and `target` pair.\n\nFor example, consider the CSF 1.1's PR.AC-1, \"Identities and credentials are issued, managed, verified, revoked, and audited for authorized devices, users and processes\", and the Privacy Framework's PR.AC-P1, \"Identities and credentials are issued, managed, verified, and devices.\"\n\nThese two requirements have identical wording except for \"users\" versus \"individuals\" and the order of the last few words. With a \\`matching-rationale\\` of syntactic, the relationship type would beintersects with because the two overlap, but each includes content that the other does not. However, with a rationale of semantic, the relationship type would be equal if \"users\" and \"individuals\" have the same meaning in their respective sources, subset if \"users\" was a subset of \"individuals,\" and so on.\n\nWhen establishing relationships, mapping SHOULD be done at the control statement level where possible. This approach allows for a more accurate relationship.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonMapRelationshipType"
+        },
+        "sources" : {
+          "title" : "Mapping Entry Item (source or target)",
+          "description" : "A specific edge within a source or target that is the subject of a mapping.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMappingCommonMappingItemType"
+          },
+          "minItems" : 1
+        },
+        "targets" : {
+          "title" : "Mapping Entry Item (source or target)",
+          "description" : "A specific edge within a source or target that is the subject of a mapping.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMappingCommonMappingItemType"
+          },
+          "minItems" : 1
+        },
+        "qualifiers" : {
+          "title" : "Relationship Qualifier",
+          "description" : "Describes requirements, incompatibilities and gaps that are identified between a target and source in a mapping item.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMappingCommonQualifierItemType"
+          },
+          "minItems" : 1
+        },
+        "confidence-score" : {
+          "title" : "Confidence Score",
+          "description" : "This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonConfidenceScoreType"
+        },
+        "coverage" : {
+          "title" : "Coverage",
+          "description" : "A decimal value from 0-1, representing the percentage coverage of the targets by the sources.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonCoverageType"
+        },
+        "props" : {
+          "title" : "Property",
+          "description" : "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataPropertyType"
+          },
+          "minItems" : 1
+        },
+        "links" : {
+          "title" : "Link",
+          "description" : "A reference to a local or remote resource, that has a specific relation to the containing object.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataLinkType"
+          },
+          "minItems" : 1
+        },
+        "remarks" : {
+          "title" : "Remarks",
+          "description" : "Additional commentary about the containing object.",
+          "$ref" : "#/definitions/FieldOscalMetadataRemarksType"
+        }
+      },
+      "required" : [ "uuid", "relationship", "sources", "targets" ],
+      "additionalProperties" : false
+    },
+    "AssemblyOscalMappingCommonMappingItemType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingCommonMappingItemType",
+      "title" : "Mapping Entry Item (source or target)",
+      "description" : "A specific edge within a source or target that is the subject of a mapping.",
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "title" : "Subject Type",
+          "description" : "The semantic type of the subject.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMappingItemTypeType"
+        },
+        "id-ref" : {
+          "title" : "Subject Identifier Reference",
+          "description" : "A reference to an identified subject that is of the specified `type` .",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMappingItemIdRefType"
+        },
+        "props" : {
+          "title" : "Property",
+          "description" : "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataPropertyType"
+          },
+          "minItems" : 1
+        },
+        "links" : {
+          "title" : "Link",
+          "description" : "A reference to a local or remote resource, that has a specific relation to the containing object.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataLinkType"
+          },
+          "minItems" : 1
+        },
+        "remarks" : {
+          "title" : "Remarks",
+          "description" : "Additional commentary about the containing object.",
+          "$ref" : "#/definitions/FieldOscalMetadataRemarksType"
+        }
+      },
+      "required" : [ "type", "id-ref" ],
+      "additionalProperties" : false
+    },
+    "AssemblyOscalMappingCommonMappingProvenanceType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingCommonMappingProvenanceType",
+      "title" : "Mapping Provenance",
+      "description" : "Describes requirements, incompatibilities and gaps that are identified between a target and source in a mapping item.",
+      "type" : "object",
+      "properties" : {
+        "method" : {
+          "title" : "Method",
+          "description" : "The method used to complete the overall mapping.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMethodType"
+        },
+        "matching-rationale" : {
+          "title" : "Matching",
+          "description" : "The method used for relating controls within the mapping. The supported methods are aligned with the [NIST Interagency Report (IR) 8477](https://doi.org/10.6028/NIST.IR.8477), Section 4.3 Set Theory Relationship Mapping.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMatchingRationaleType"
+        },
+        "status" : {
+          "title" : "Status",
+          "description" : "The current status of this mapping document.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonStatusType"
+        },
+        "confidence-score" : {
+          "title" : "Confidence Score",
+          "description" : "This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonConfidenceScoreType"
+        },
+        "coverage" : {
+          "title" : "Coverage",
+          "description" : "A decimal value from 0-1, representing the percentage coverage of the targets by the sources.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonCoverageType"
+        },
+        "mapping-description" : {
+          "title" : "Mapping Description",
+          "description" : "Description of the context and intended use of the mapping set.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonMappingDescriptionType"
+        },
+        "responsible-parties" : {
+          "title" : "Responsible Party",
+          "description" : "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataResponsiblePartyType"
+          },
+          "minItems" : 1
+        },
+        "props" : {
+          "title" : "Property",
+          "description" : "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataPropertyType"
+          },
+          "minItems" : 1
+        },
+        "links" : {
+          "title" : "Link",
+          "description" : "A reference to a local or remote resource, that has a specific relation to the containing object.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataLinkType"
+          },
+          "minItems" : 1
+        },
+        "remarks" : {
+          "title" : "Remarks",
+          "description" : "Additional commentary about the containing object.",
+          "$ref" : "#/definitions/FieldOscalMetadataRemarksType"
+        }
+      },
+      "required" : [ "method", "matching-rationale", "status", "mapping-description" ],
+      "additionalProperties" : false
+    },
+    "AssemblyOscalMappingCommonMappingResourceReferenceType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingCommonMappingResourceReferenceType",
+      "title" : "Mapped Resource Reference",
+      "description" : "A reference to a resource that is either the source or the target of a mapping.",
+      "type" : "object",
+      "properties" : {
+        "ns" : {
+          "title" : "Resource Type Namespace",
+          "description" : "An optional namespace qualifying the resource's `type`.\n\nThis value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier).\n\nWhen a `ns` is not provided, its value should be assumed to be `http://csrc.nist.gov/ns/oscal` and the type should be a type defined by the associated OSCAL model.",
+          "default" : "http://csrc.nist.gov/ns/oscal",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMappingResourceReferenceNsType"
+        },
+        "type" : {
+          "title" : "Resource Type",
+          "description" : "The semantic type of the resource.\n\nThe `type` value must be interpreted in the context of the associated `ns` value.\n\nWhen a `ns` is not provided, its value should be assumed to be `http://csrc.nist.gov/ns/oscal` and this type should be set to one of the OSCAL defined values.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMappingResourceReferenceTypeType"
+        },
+        "href" : {
+          "title" : "Catalog or Profile Reference",
+          "description" : "A resolvable URL reference to the base catalog or profile that this profile is tailoring.\n\nThis value may be one of:\n\n1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or\n3. a bare URI fragment (i.e., \\`#uuid\\`) pointing to a `back-matter` resource in this or an imported document (see [linking to another OSCAL object](https://pages.nist.gov/OSCAL/concepts/uri-use/#linking-to-another-oscal-object)).",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMappingResourceReferenceHrefType"
+        },
+        "props" : {
+          "title" : "Property",
+          "description" : "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataPropertyType"
+          },
+          "minItems" : 1
+        },
+        "links" : {
+          "title" : "Link",
+          "description" : "A reference to a local or remote resource, that has a specific relation to the containing object.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataLinkType"
+          },
+          "minItems" : 1
+        },
+        "remarks" : {
+          "title" : "Remarks",
+          "description" : "Additional commentary about the containing object.",
+          "$ref" : "#/definitions/FieldOscalMetadataRemarksType"
+        }
+      },
+      "required" : [ "type", "href" ],
+      "additionalProperties" : false
+    },
+    "AssemblyOscalMappingCommonMappingType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingCommonMappingType",
+      "title" : "Control Mapping",
+      "description" : "A mapping between two target resources.",
+      "type" : "object",
+      "properties" : {
+        "uuid" : {
+          "title" : "Mapping Universally Unique Identifier",
+          "description" : "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this mapping definition elsewhere in this or other OSCAL instances. The locally defined *UUID* of the ` mapping` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same mapping across revisions of the document.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMappingUuidType"
+        },
+        "method" : {
+          "title" : "Method",
+          "description" : "The method used to complete the overall mapping.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMethodType"
+        },
+        "matching-rationale" : {
+          "title" : "Matching",
+          "description" : "The method used for relating controls within the mapping. The supported methods are aligned with the [NIST Interagency Report (IR) 8477](https://doi.org/10.6028/NIST.IR.8477), Section 4.3 Set Theory Relationship Mapping.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonMatchingRationaleType"
+        },
+        "status" : {
+          "title" : "Status",
+          "description" : "The current status of this mapping document.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonStatusType"
+        },
+        "source-resource" : {
+          "title" : "Mapped Resource Reference",
+          "description" : "A reference to a resource that is either the source or the target of a mapping.",
+          "$ref" : "#/definitions/AssemblyOscalMappingCommonMappingResourceReferenceType"
+        },
+        "target-resource" : {
+          "title" : "Mapped Resource Reference",
+          "description" : "A reference to a resource that is either the source or the target of a mapping.",
+          "$ref" : "#/definitions/AssemblyOscalMappingCommonMappingResourceReferenceType"
+        },
+        "maps" : {
+          "title" : "Mapping Entry",
+          "description" : "A relationship-based mapping between a source and target set consisting of members (i.e., controls, control statements) from the respective source and target.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMappingCommonMapType"
+          },
+          "minItems" : 1
+        },
+        "props" : {
+          "title" : "Property",
+          "description" : "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataPropertyType"
+          },
+          "minItems" : 1
+        },
+        "links" : {
+          "title" : "Link",
+          "description" : "A reference to a local or remote resource, that has a specific relation to the containing object.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMetadataLinkType"
+          },
+          "minItems" : 1
+        },
+        "remarks" : {
+          "title" : "Remarks",
+          "description" : "Additional commentary about the containing object.",
+          "$ref" : "#/definitions/FieldOscalMetadataRemarksType"
+        },
+        "mapping-description" : {
+          "title" : "Mapping Description",
+          "description" : "Description of the context and intended use of the mapping set.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonMappingDescriptionType"
+        },
+        "source-gap-summary" : {
+          "title" : "Gap Summary",
+          "description" : "A *by-id* collection of all controls that were not mapped at all in this ` mapping-collection`. If a control is partially mapped, the parts of the control are unmappable, the gap and discrepancies should be documented in the ` relationship-gal`.",
+          "$ref" : "#/definitions/AssemblyOscalMappingCommonGapSummaryType"
+        },
+        "target-gap-summary" : {
+          "title" : "Gap Summary",
+          "description" : "A *by-id* collection of all controls that were not mapped at all in this ` mapping-collection`. If a control is partially mapped, the parts of the control are unmappable, the gap and discrepancies should be documented in the ` relationship-gal`.",
+          "$ref" : "#/definitions/AssemblyOscalMappingCommonGapSummaryType"
+        },
+        "confidence-score" : {
+          "title" : "Confidence Score",
+          "description" : "This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonConfidenceScoreType"
+        },
+        "coverage" : {
+          "title" : "Coverage",
+          "description" : "A decimal value from 0-1, representing the percentage coverage of the targets by the sources.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonCoverageType"
+        }
+      },
+      "required" : [ "uuid", "source-resource", "target-resource", "maps" ],
+      "additionalProperties" : false
+    },
+    "AssemblyOscalMappingCommonMatchingType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingCommonMatchingType",
+      "title" : "Match Controls by Pattern",
+      "description" : "Selecting a set of controls by matching their IDs with a wildcard pattern.",
+      "type" : "object",
+      "properties" : {
+        "pattern" : {
+          "title" : "Pattern",
+          "description" : "A [glob expression](https://en.wikipedia.org/wiki/Glob_(programming)) matching the IDs of one or more controls to be selected.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonPatternType"
+        }
+      },
+      "additionalProperties" : false
+    },
+    "AssemblyOscalMappingCommonQualifierItemType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingCommonQualifierItemType",
+      "title" : "Relationship Qualifier",
+      "description" : "Describes requirements, incompatibilities and gaps that are identified between a target and source in a mapping item.",
+      "type" : "object",
+      "properties" : {
+        "subject" : {
+          "title" : "Subject",
+          "description" : "The focus of the qualifier.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonQualifierItemSubjectType"
+        },
+        "predicate" : {
+          "title" : "Predicate",
+          "description" : "The predicate describes how the qualifer applies to the subject.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonQualifierItemPredicateType"
+        },
+        "category" : {
+          "title" : "Category",
+          "description" : "The category expresses the resolvable nature of the predicate.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonQualifierItemCategoryType"
+        },
+        "description" : {
+          "title" : "Description of the qualifier",
+          "description" : "Details that outline what requirements must be met, or cannot be met. If the qualifier identifies a gap, this should idenfity the gap, and any incompatibilities.",
+          "$ref" : "#/definitions/FieldOscalMappingCommonQualifierItemDescriptionType"
+        },
+        "remarks" : {
+          "title" : "Remarks",
+          "description" : "Additional commentary about the containing object.",
+          "$ref" : "#/definitions/FieldOscalMetadataRemarksType"
+        }
+      },
+      "required" : [ "subject", "predicate", "category", "description" ],
+      "additionalProperties" : false
+    },
+    "AssemblyOscalMappingCommonSelectControlByIdType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingCommonSelectControlByIdType",
+      "title" : "Select Control",
+      "description" : "Select a control or controls from an imported control set.\n\nIf `with-child-controls` is \"yes\" on the call to a control, no sibling `call`elements need to be used to call any controls appearing within it. Since generally, this is how control enhancements are represented (as controls within controls), this provides a way to include controls with all their dependent controls (enhancements) without having to call them individually.",
+      "type" : "object",
+      "properties" : {
+        "with-child-controls" : {
+          "title" : "Include Contained Controls with Control",
+          "description" : "When a control is included, whether its child (dependent) controls are also included.",
+          "$ref" : "#/definitions/FlagOscalMappingCommonWithChildControlsType"
+        },
+        "with-ids" : {
+          "title" : "Match Controls by Identifier",
+          "description" : "Selecting a control by its ID given as a literal.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/FieldOscalMappingCommonSelectControlByIdWithIdType"
+          },
+          "minItems" : 1
+        },
+        "matching" : {
+          "title" : "Match Controls by Pattern",
+          "description" : "Selecting a set of controls by matching their IDs with a wildcard pattern.",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AssemblyOscalMappingCommonMatchingType"
+          },
+          "minItems" : 1
+        }
+      },
+      "additionalProperties" : false
+    },
+    "AssemblyOscalMappingMappingCollectionType" : {
+      "$id" : "#/definitions/AssemblyOscalMappingMappingCollectionType",
+      "title" : "Mapping Collection",
+      "description" : "A collection of relationship-based control and/or control statement mappings.\n\nA mapping collection affirmatively declares the relationships that exist between sets of controls and/or control statements in a source and target. It is expected that inferences can be made based on what is mapped; however, no inferences should be made based on what is not mapped, since it is impossible to quantify how complete or granular a given mapping is.",
+      "type" : "object",
+      "properties" : {
+        "uuid" : {
+          "title" : "Mapping Collection Universally Unique Identifier",
+          "description" : "A globally unique identifier with cross-instance scope for this catalog instance. This UUID should be changed when this document is revised.",
+          "$ref" : "#/definitions/FlagOscalMappingMappingCollectionUuidType"
+        },
+        "metadata" : {
+          "title" : "Document Metadata",
+          "description" : "Provides information about the containing document, and defines concepts that are shared across the document.",
+          "$ref" : "#/definitions/AssemblyOscalMetadataMetadataType"
+        },
+        "provenance" : {
+          "title" : "Mapping Provenance",
+          "description" : "Describes requirements, incompatibilities and gaps that are identified between a target and source in a mapping item.",
+          "$ref" : "#/definitions/AssemblyOscalMappingCommonMappingProvenanceType"
+        },
+        "mappings" : {
+          "title" : "Control Mapping",
+          "description" : "A mapping between two target resources.",
+          "oneOf" : [ {
+            "$ref" : "#/definitions/AssemblyOscalMappingCommonMappingType"
+          }, {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/AssemblyOscalMappingCommonMappingType"
+            },
+            "minItems" : 2
+          } ]
+        },
+        "back-matter" : {
+          "title" : "Back matter",
+          "description" : "A collection of resources that may be referenced from within the OSCAL document instance.\n\nBack matter including references and resources.",
+          "$ref" : "#/definitions/AssemblyOscalMetadataBackMatterType"
+        }
+      },
+      "required" : [ "uuid", "metadata", "provenance", "mappings" ],
+      "additionalProperties" : false
+    },
     "AssemblyOscalMetadataActionType" : {
       "$id" : "#/definitions/AssemblyOscalMetadataActionType",
       "title" : "Action",
@@ -7938,6 +8438,76 @@
       "description" : "A name given to the user, which may be used by a tool for display and navigation.",
       "$ref" : "#/definitions/MarkupLineDatatype"
     },
+    "FieldOscalMappingCommonConfidenceScoreType" : {
+      "$id" : "#/definitions/FieldOscalMappingCommonConfidenceScoreType",
+      "title" : "Confidence Score",
+      "description" : "This records either a string category or a decimal value from 0-1 representing a percentage. Both of these values describe an estimation of the author's confidence that this mapping is correct and accurate.",
+      "type" : "object",
+      "properties" : {
+        "STRVALUE" : {
+          "STRVALUE" : {
+            "$ref" : "#/definitions/StringDatatype"
+          }
+        },
+        "category" : {
+          "$ref" : "#/definitions/FlagOscalMappingCommonConfidenceScoreCategoryType"
+        },
+        "percentage" : {
+          "$ref" : "#/definitions/FlagOscalMappingCommonConfidenceScorePercentageType"
+        }
+      },
+      "required" : [ "STRVALUE" ],
+      "additionalProperties" : false
+    },
+    "FieldOscalMappingCommonCoverageType" : {
+      "$id" : "#/definitions/FieldOscalMappingCommonCoverageType",
+      "title" : "Coverage",
+      "description" : "A decimal value from 0-1, representing the percentage coverage of the targets by the sources.\n\nThis field is scoped - that is, it can be used at the document-level, the mapping level, or the individual map item level. It only applies to targets and sources within it's scope.\n\nCoverage is calculated by taking the full set of all targets in-scope and the full set of all sources in-scope, then applying the \"generation-method\" to the two sets. By default the method is an arbitrary estimation of coverage.\n\nIn a general sense \"coverage\" is defined as the percent of the set of targets that have mapped to by the set of sources, where each map is an \"equivalent-to\" or \"equal-to\" valued \"relationship\". Where relationship is \"subset-of\" or otherwise, it counts as an appropriate fraction of a full map.\n\nSince coverage is derived from mapping relationships, it is defined in the context of the mapping's \"matching-rationale\" - that is, the method used to determine relationships.",
+      "type" : "object",
+      "properties" : {
+        "STRVALUE" : {
+          "STRVALUE" : {
+            "$ref" : "#/definitions/DecimalDatatype"
+          }
+        },
+        "generation-method" : {
+          "default" : "arbitrary",
+          "$ref" : "#/definitions/FlagOscalMappingCommonCoverageGenerationMethodType"
+        }
+      },
+      "required" : [ "STRVALUE" ],
+      "additionalProperties" : false
+    },
+    "FieldOscalMappingCommonMapRelationshipType" : {
+      "$id" : "#/definitions/FieldOscalMappingCommonMapRelationshipType",
+      "title" : "Mapping Entry Relationship",
+      "description" : "The relationship type for the mapping entry, which describes the relationship between the effective requirements of the specified source and target sets in the context of the `matching-rationale` method globaly defined in the `provenance` unless overwritten locally in the ` map`. The `relationship` type and the `matching-rationale` must be used together. However, more than one `matching-rationale` method may apply to a `source` and `target` pair.\n\nFor example, consider the CSF 1.1's PR.AC-1, \"Identities and credentials are issued, managed, verified, revoked, and audited for authorized devices, users and processes\", and the Privacy Framework's PR.AC-P1, \"Identities and credentials are issued, managed, verified, and devices.\"\n\nThese two requirements have identical wording except for \"users\" versus \"individuals\" and the order of the last few words. With a \\`matching-rationale\\` of syntactic, the relationship type would beintersects with because the two overlap, but each includes content that the other does not. However, with a rationale of semantic, the relationship type would be equal if \"users\" and \"individuals\" have the same meaning in their respective sources, subset if \"users\" was a subset of \"individuals,\" and so on.\n\nWhen establishing relationships, mapping SHOULD be done at the control statement level where possible. This approach allows for a more accurate relationship.",
+      "$ref" : "#/definitions/TokenDatatype"
+    },
+    "FieldOscalMappingCommonMappingDescriptionType" : {
+      "$id" : "#/definitions/FieldOscalMappingCommonMappingDescriptionType",
+      "title" : "Mapping Description",
+      "description" : "Description of the context and intended use of the mapping set.\n\nThe value of this field applies to the entire document if found in the top-level mapping provenance, otherwise it applies to the specific mapping in which it is found.\n\nIf this field appears in both locations, the lower-scoped value overrides while within it's scope.",
+      "$ref" : "#/definitions/MarkupMultilineDatatype"
+    },
+    "FieldOscalMappingCommonMappingProvenanceMappingDescriptionType" : {
+      "$id" : "#/definitions/FieldOscalMappingCommonMappingProvenanceMappingDescriptionType",
+      "title" : "Mapping Description",
+      "description" : "Description of the context and intended use of the mapping set.",
+      "$ref" : "#/definitions/MarkupMultilineDatatype"
+    },
+    "FieldOscalMappingCommonQualifierItemDescriptionType" : {
+      "$id" : "#/definitions/FieldOscalMappingCommonQualifierItemDescriptionType",
+      "title" : "Description of the qualifier",
+      "description" : "Details that outline what requirements must be met, or cannot be met. If the qualifier identifies a gap, this should idenfity the gap, and any incompatibilities.",
+      "$ref" : "#/definitions/MarkupMultilineDatatype"
+    },
+    "FieldOscalMappingCommonSelectControlByIdWithIdType" : {
+      "$id" : "#/definitions/FieldOscalMappingCommonSelectControlByIdWithIdType",
+      "title" : "Match Controls by Identifier",
+      "description" : "Selecting a control by its ID given as a literal.",
+      "$ref" : "#/definitions/TokenDatatype"
+    },
     "FieldOscalMetadataAddrLineType" : {
       "$id" : "#/definitions/FieldOscalMetadataAddrLineType",
       "title" : "Address line",
@@ -9085,6 +9655,170 @@
       "description" : "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this user class elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#scope). The locally defined *UUID* of the `system user` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.",
       "$ref" : "#/definitions/UUIDDatatype"
     },
+    "FlagOscalMappingCommonConfidenceScoreCategoryType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonConfidenceScoreCategoryType",
+      "anyOf" : [ {
+        "$ref" : "#/definitions/StringDatatype"
+      }, {
+        "enum" : [ "unspecified", "high", "medium", "low" ]
+      } ]
+    },
+    "FlagOscalMappingCommonConfidenceScorePercentageType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonConfidenceScorePercentageType",
+      "$ref" : "#/definitions/DecimalDatatype"
+    },
+    "FlagOscalMappingCommonCoverageGenerationMethodType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonCoverageGenerationMethodType",
+      "anyOf" : [ {
+        "$ref" : "#/definitions/StringDatatype"
+      }, {
+        "enum" : [ "arbitrary" ]
+      } ]
+    },
+    "FlagOscalMappingCommonGapSummaryUuidType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonGapSummaryUuidType",
+      "title" : "Gap Summary Universally Unique Identifier",
+      "description" : "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this mapping gap summary elsewhere in [this or other OSCAL instances](https://pages.nist.gov/OSCAL/concepts/identifier-use/#ssp-identifiers). The locally defined *UUID* of the `SSP` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same subject across revisions of the document.",
+      "$ref" : "#/definitions/UUIDDatatype"
+    },
+    "FlagOscalMappingCommonMapNsType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMapNsType",
+      "title" : "Relationship Value Namespace",
+      "description" : "A namespace qualifying the relationship's value. This allows different organizations to associate distinct semantics for relationships with the same name.\n\nThis value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier).\n\nWhen a `ns` is not provided, its value should be assumed to be ` http://csrc.nist.gov/ns/oscal` and the name should be a name defined by the associated OSCAL model.",
+      "$ref" : "#/definitions/URIDatatype"
+    },
+    "FlagOscalMappingCommonMapUuidType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMapUuidType",
+      "title" : "Mapping Entry Identifier",
+      "description" : "The unique identifier for the mapping entry.",
+      "$ref" : "#/definitions/UUIDDatatype"
+    },
+    "FlagOscalMappingCommonMappingItemIdRefType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMappingItemIdRefType",
+      "title" : "Subject Identifier Reference",
+      "description" : "A reference to an identified subject that is of the specified `type` .",
+      "$ref" : "#/definitions/StringDatatype"
+    },
+    "FlagOscalMappingCommonMappingItemTypeType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMappingItemTypeType",
+      "title" : "Subject Type",
+      "description" : "The semantic type of the subject.",
+      "allOf" : [ {
+        "$ref" : "#/definitions/TokenDatatype"
+      }, {
+        "enum" : [ "control", "statement" ]
+      } ]
+    },
+    "FlagOscalMappingCommonMappingResourceReferenceHrefType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMappingResourceReferenceHrefType",
+      "title" : "Catalog or Profile Reference",
+      "description" : "A resolvable URL reference to the base catalog or profile that this profile is tailoring.\n\nThis value may be one of:\n\n1. an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that points to a network resolvable resource,\n2. a [relative reference](https://pages.nist.gov/OSCAL/concepts/uri-use/#relative-reference) pointing to a network resolvable resource whose base URI is the URI of the containing document, or\n3. a bare URI fragment (i.e., \\`#uuid\\`) pointing to a `back-matter` resource in this or an imported document (see [linking to another OSCAL object](https://pages.nist.gov/OSCAL/concepts/uri-use/#linking-to-another-oscal-object)).",
+      "$ref" : "#/definitions/URIReferenceDatatype"
+    },
+    "FlagOscalMappingCommonMappingResourceReferenceNsType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMappingResourceReferenceNsType",
+      "title" : "Resource Type Namespace",
+      "description" : "An optional namespace qualifying the resource's `type`.\n\nThis value must be an [absolute URI](https://pages.nist.gov/OSCAL/concepts/uri-use/#absolute-uri) that serves as a [naming system identifier](https://pages.nist.gov/OSCAL/concepts/uri-use/#use-as-a-naming-system-identifier).\n\nWhen a `ns` is not provided, its value should be assumed to be `http://csrc.nist.gov/ns/oscal` and the type should be a type defined by the associated OSCAL model.",
+      "$ref" : "#/definitions/URIDatatype"
+    },
+    "FlagOscalMappingCommonMappingResourceReferenceTypeType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMappingResourceReferenceTypeType",
+      "title" : "Resource Type",
+      "description" : "The semantic type of the resource.\n\nThe `type` value must be interpreted in the context of the associated `ns` value.\n\nWhen a `ns` is not provided, its value should be assumed to be `http://csrc.nist.gov/ns/oscal` and this type should be set to one of the OSCAL defined values.",
+      "anyOf" : [ {
+        "$ref" : "#/definitions/TokenDatatype"
+      }, {
+        "enum" : [ "catalog", "profile" ]
+      } ]
+    },
+    "FlagOscalMappingCommonMappingUuidType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMappingUuidType",
+      "title" : "Mapping Universally Unique Identifier",
+      "description" : "A [machine-oriented](https://pages.nist.gov/OSCAL/concepts/identifier-use/#machine-oriented), [globally unique](https://pages.nist.gov/OSCAL/concepts/identifier-use/#globally-unique) identifier with [cross-instance](https://pages.nist.gov/OSCAL/concepts/identifier-use/#cross-instance) scope that can be used to reference this mapping definition elsewhere in this or other OSCAL instances. The locally defined *UUID* of the ` mapping` can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned [per-subject](https://pages.nist.gov/OSCAL/concepts/identifier-use/#consistency), which means it should be consistently used to identify the same mapping across revisions of the document.",
+      "$ref" : "#/definitions/UUIDDatatype"
+    },
+    "FlagOscalMappingCommonMatchingRationaleType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMatchingRationaleType",
+      "title" : "Matching",
+      "description" : "The method used for relating controls within the mapping. The supported methods are aligned with the [NIST Interagency Report (IR) 8477](https://doi.org/10.6028/NIST.IR.8477), Section 4.3 Set Theory Relationship Mapping.\n\nThe value of this flag applies to the entire document if found in the top-level mapping provenance, otherwise it applies to the specific mapping in which it is found.\n\nIf this flag appears in both locations, the lower-scoped value overrides while within it's scope.",
+      "allOf" : [ {
+        "$ref" : "#/definitions/StringDatatype"
+      }, {
+        "enum" : [ "syntactic", "semantic", "functional" ]
+      } ]
+    },
+    "FlagOscalMappingCommonMethodType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonMethodType",
+      "title" : "Method",
+      "description" : "The method used to complete the overall mapping.\n\nThe value of this flag applies to the entire document if found in the top-level mapping provenance, otherwise it applies to the specific mapping in which it is found.\n\nIf this flag appears in both locations, the lower-scoped value overrides while within it's scope.",
+      "allOf" : [ {
+        "$ref" : "#/definitions/StringDatatype"
+      }, {
+        "enum" : [ "human", "automation", "hybrid" ]
+      } ]
+    },
+    "FlagOscalMappingCommonPatternType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonPatternType",
+      "title" : "Pattern",
+      "description" : "A [glob expression](https://en.wikipedia.org/wiki/Glob_(programming)) matching the IDs of one or more controls to be selected.",
+      "$ref" : "#/definitions/StringDatatype"
+    },
+    "FlagOscalMappingCommonQualifierItemCategoryType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonQualifierItemCategoryType",
+      "title" : "Category",
+      "description" : "The category expresses the resolvable nature of the predicate.",
+      "allOf" : [ {
+        "$ref" : "#/definitions/StringDatatype"
+      }, {
+        "enum" : [ "restricted", "addressable", "blocked" ]
+      } ]
+    },
+    "FlagOscalMappingCommonQualifierItemPredicateType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonQualifierItemPredicateType",
+      "title" : "Predicate",
+      "description" : "The predicate describes how the qualifer applies to the subject.",
+      "allOf" : [ {
+        "$ref" : "#/definitions/StringDatatype"
+      }, {
+        "enum" : [ "has-requirement", "has-incompatibility" ]
+      } ]
+    },
+    "FlagOscalMappingCommonQualifierItemSubjectType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonQualifierItemSubjectType",
+      "title" : "Subject",
+      "description" : "The focus of the qualifier.",
+      "allOf" : [ {
+        "$ref" : "#/definitions/StringDatatype"
+      }, {
+        "enum" : [ "source", "target", "both" ]
+      } ]
+    },
+    "FlagOscalMappingCommonStatusType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonStatusType",
+      "title" : "Status",
+      "description" : "The current status of this mapping document.\n\nThe value of this flag applies to the entire document if found in the top-level mapping provenance, otherwise it applies to the specific mapping in which it is found.\n\nIf this flag appears in both locations, the lower-scoped value overrides while within it's scope.",
+      "allOf" : [ {
+        "$ref" : "#/definitions/StringDatatype"
+      }, {
+        "enum" : [ "complete", "not-complete", "draft", "deprecated", "superseded" ]
+      } ]
+    },
+    "FlagOscalMappingCommonWithChildControlsType" : {
+      "$id" : "#/definitions/FlagOscalMappingCommonWithChildControlsType",
+      "title" : "Include Contained Controls with Control",
+      "description" : "When a control is included, whether its child (dependent) controls are also included.",
+      "allOf" : [ {
+        "$ref" : "#/definitions/TokenDatatype"
+      }, {
+        "enum" : [ "yes", "no" ]
+      } ]
+    },
+    "FlagOscalMappingMappingCollectionUuidType" : {
+      "$id" : "#/definitions/FlagOscalMappingMappingCollectionUuidType",
+      "title" : "Mapping Collection Universally Unique Identifier",
+      "description" : "A globally unique identifier with cross-instance scope for this catalog instance. This UUID should be changed when this document is revised.",
+      "$ref" : "#/definitions/UUIDDatatype"
+    },
     "FlagOscalMetadataActionDateType" : {
       "$id" : "#/definitions/FlagOscalMetadataActionDateType",
       "title" : "Action Occurrence Date",
@@ -9570,6 +10304,11 @@
       "format" : "date-time",
       "pattern" : "^(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?(Z|(-((0[0-9]|1[0-2]):00|0[39]:30)|\\+((0[0-9]|1[0-4]):00|(0[34569]|10):30|(0[58]|12):45)))$"
     },
+    "DecimalDatatype" : {
+      "description" : "A real number expressed using a whole and optional fractional part separated by a period.",
+      "type" : "number",
+      "pattern" : "^(\\+|-)?([0-9]+(\\.[0-9]*)?|\\.[0-9]+)$"
+    },
     "EmailAddressDatatype" : {
       "description" : "An email address string formatted according to RFC 6531.",
       "allOf" : [ {
@@ -9656,11 +10395,11 @@
         "type" : "string",
         "format" : "uri-reference"
       },
-      "plan-of-action-and-milestones" : {
-        "$ref" : "#/definitions/AssemblyOscalPoamPlanOfActionAndMilestonesType"
+      "catalog" : {
+        "$ref" : "#/definitions/AssemblyOscalCatalogCatalogType"
       }
     },
-    "required" : [ "plan-of-action-and-milestones" ],
+    "required" : [ "catalog" ],
     "additionalProperties" : false
   }, {
     "properties" : {
@@ -9668,11 +10407,23 @@
         "type" : "string",
         "format" : "uri-reference"
       },
-      "catalog" : {
-        "$ref" : "#/definitions/AssemblyOscalCatalogCatalogType"
+      "mapping-collection" : {
+        "$ref" : "#/definitions/AssemblyOscalMappingMappingCollectionType"
       }
     },
-    "required" : [ "catalog" ],
+    "required" : [ "mapping-collection" ],
+    "additionalProperties" : false
+  }, {
+    "properties" : {
+      "$schema" : {
+        "type" : "string",
+        "format" : "uri-reference"
+      },
+      "plan-of-action-and-milestones" : {
+        "$ref" : "#/definitions/AssemblyOscalPoamPlanOfActionAndMilestonesType"
+      }
+    },
+    "required" : [ "plan-of-action-and-milestones" ],
     "additionalProperties" : false
   }, {
     "properties" : {
