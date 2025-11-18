@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://csrc.nist.gov/ns/oscal/1.0"
+           xmlns:vs="http://www.w3.org/2007/XMLSchema-versioning"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://csrc.nist.gov/ns/oscal/1.0"
+           elementFormDefault="qualified"
+           vs:minVersion="1.0"
+           vs:maxVersion="1.1"
+           version="1.1.3">
+   <xs:annotation>
+      <xs:appinfo>
+         <schema-name>OSCAL Assessment Layer Format -- Common Modules</schema-name>
+         <schema-version>1.1.3</schema-version>
+         <short-name>oscal-assessment-common</short-name>
+      </xs:appinfo>
+      <xs:documentation>
+         <p>This contains all modules common to the assessment plan, assessment results, and POAM models.</p>
+         <p>The root of the OSCAL Assessment Plan format is <code>assessment-plan</code>.</p>
+         <p>The root of the OSCAL Assessment Results format is <code>assessment-results</code>.</p>
+         <p>The root of the OSCAL Plan of Action and Milestones (POA&amp;M) format is <code>plan-of-action-and-milestones</code>.</p>
+      </xs:documentation>
+   </xs:annotation>
+</xs:schema>
